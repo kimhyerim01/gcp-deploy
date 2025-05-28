@@ -10,7 +10,7 @@ jobs:
 
     env:
       GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      IMAGE_NAME: goormthon // 임의로 변경 가능, 단 아래 IMAGE_NAME도 동일하게 변경
+      IMAGE_NAME: goormthon
       IMAGE_TAG: ${{ github.sha }}
 
 
