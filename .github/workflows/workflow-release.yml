@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'adopt'
@@ -36,7 +36,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle(Test 제외)
         run: ./gradlew build --exclude-task test
@@ -61,12 +61,6 @@ jobs:
       GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
     steps:
-      - name: 서버에 .env.production 전송
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.DEPLOY_SERVER_HOST }}
-          username: ${{ secrets.DEPLOY_SERVER_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
 
       - name: 서버에 SSH 접속하여 Docker 실행
         uses: appleboy/ssh-action@v0.1.5
@@ -79,13 +73,12 @@ jobs:
             IMAGE_TAG=${{ github.sha }}
             GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
             
-            sudo docker network create --driver bridge app-network
+            docker network inspect app-network >/dev/null 2>&1 || docker network create --driver bridge app-network
             
             sudo docker stop $IMAGE_NAME || true
             sudo docker rm $IMAGE_NAME || true
             
-            
-            sudo docker login -u _json_key --password-stdin https://us-central1-docker.pkg.dev
+            sudo docker login -u _json_key --password-stdin https://us-central1-docker.pkg.dev <<< '${{ secrets.GCP_SA_KEY }}'
             sudo docker pull us-central1-docker.pkg.dev/$GCP_PROJECT_ID/docker/$IMAGE_NAME:$IMAGE_TAG
             
             sudo docker run -d \
