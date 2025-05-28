@@ -7,7 +7,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://34.60.104.129:3306/sys
+    url: jdbc:mysql://34.132.215.189:3306/sys
     username: root
 
   thymeleaf:
