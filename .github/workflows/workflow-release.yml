@@ -2,7 +2,7 @@ name: CI / CD
 
 on:
   push:
-    branches: [jinyoung] // 배포용 브랜치 생성 후 해당 브랜치명 입력
+    branches: [main]
 
 jobs:
   CI:
